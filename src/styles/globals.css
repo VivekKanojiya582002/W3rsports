@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Barlow:wght@400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-main:      #0a1a0f;
+  --bg-card:      #0f2218;
+  --bg-nav:       #071510;
+  --bg-dark:      #060e0a;
+  --accent:       #00e676;
+  --accent-hover: #00c853;
+  --text-primary: #ffffff;
+  --text-muted:   #6b7280;
+  --text-dim:     #9ca3af;
+  --border:       #1a3a25;
+  --border-light: #1f4a2e;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: 'Barlow', sans-serif;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-light);
+  border-radius: 4px;
+}
+
+button {
+  cursor: pointer;
+  font-family: 'Barlow', sans-serif;
+}
