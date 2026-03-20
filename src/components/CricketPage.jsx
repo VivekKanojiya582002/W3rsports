@@ -65,99 +65,7 @@ function ErrorMessage({ onRetry }) {
   )
 }
 
-// ── Smart Country Flag ───────────────────────────────────────
-function getCountryFlag(teamName) {
-  if (!teamName) return '🏏'
-  const t = teamName.toLowerCase()
-
-  const india = [
-    'india', 'karnataka', 'mumbai', 'delhi', 'chennai',
-    'kolkata', 'bengal', 'west bengal', 'hyderabad', 'punjab',
-    'rajasthan', 'gujarat', 'maharashtra', 'andhra', 'tamil nadu',
-    'kerala', 'goa', 'assam', 'bihar', 'jharkhand', 'odisha',
-    'chhattisgarh', 'uttarakhand', 'uttar pradesh', 'madhya pradesh',
-    'himachal pradesh', 'haryana', 'chandigarh', 'tripura',
-    'meghalaya', 'manipur', 'nagaland', 'mizoram', 'arunachal',
-    'sikkim', 'jammu', 'kashmir', 'saurashtra', 'baroda',
-    'vidarbha', 'railways', 'railwaymen', 'services', 'puducherry',
-    'mumbai indians', 'chennai super kings', 'royal challengers',
-    'kolkata knight riders', 'delhi capitals', 'sunrisers',
-    'punjab kings', 'rajasthan royals', 'lucknow super giants',
-    'gujarat titans', 'rising pune', 'pune warriors',
-  ]
-  const southAfrica = [
-    'south africa', 'warriors', 'titans', 'knights', 'dolphins',
-    'lions', 'cape cobras', 'north west', 'kwazulu', 'border',
-    'eastvaal', 'boland', 'northerns', 'eastern province',
-    'free state', 'griqualand', 'south western districts',
-  ]
-  const australia = [
-    'australia', 'new south wales', 'victoria', 'queensland',
-    'south australia', 'western australia', 'tasmania',
-    'sydney sixers', 'sydney thunder', 'melbourne stars',
-    'melbourne renegades', 'brisbane heat', 'adelaide strikers',
-    'hobart hurricanes', 'perth scorchers',
-  ]
-  const england = [
-    'england', 'yorkshire', 'lancashire', 'surrey', 'kent',
-    'essex', 'hampshire', 'warwickshire', 'nottinghamshire',
-    'somerset', 'middlesex', 'durham', 'leicestershire',
-    'northamptonshire', 'gloucestershire', 'worcestershire',
-    'derbyshire', 'sussex', 'glamorgan',
-  ]
-  const pakistan = [
-    'pakistan', 'karachi', 'lahore', 'peshawar', 'quetta',
-    'islamabad', 'multan', 'faisalabad', 'karachi kings',
-    'lahore qalandars', 'peshawar zalmi', 'quetta gladiators',
-    'islamabad united', 'multan sultans',
-  ]
-  const newZealand = [
-    'new zealand', 'auckland', 'wellington', 'canterbury',
-    'otago', 'central districts', 'northern districts',
-  ]
-  const westIndies = [
-    'west indies', 'windies', 'jamaica', 'barbados', 'trinidad',
-    'guyana', 'antigua', 'st lucia', 'st kitts', 'dominica',
-    'trinbago', 'tallawahs', 'amazon warriors', 'knight riders',
-  ]
-  const sriLanka = ['sri lanka', 'colombo', 'kandy', 'galle', 'dambulla']
-  const bangladesh = ['bangladesh', 'dhaka', 'chittagong', 'sylhet', 'rangpur', 'khulna', 'rajshahi', 'comilla']
-  const zimbabwe = ['zimbabwe', 'harare', 'bulawayo', 'midlands', 'matabeleland']
-  const afghanistan = ['afghanistan', 'kabul', 'kandahar', 'balkh']
-
-  if (india.some(x => t.includes(x))) return '🇮🇳'
-  if (southAfrica.some(x => t.includes(x))) return '🇿🇦'
-  if (australia.some(x => t.includes(x))) return '🇦🇺'
-  if (england.some(x => t.includes(x))) return '🏴󠁧󠁢󠁥󠁮󠁧󠁿'
-  if (pakistan.some(x => t.includes(x))) return '🇵🇰'
-  if (newZealand.some(x => t.includes(x))) return '🇳🇿'
-  if (westIndies.some(x => t.includes(x))) return '🏝️'
-  if (sriLanka.some(x => t.includes(x))) return '🇱🇰'
-  if (bangladesh.some(x => t.includes(x))) return '🇧🇩'
-  if (zimbabwe.some(x => t.includes(x))) return '🇿🇼'
-  if (afghanistan.some(x => t.includes(x))) return '🇦🇫'
-
-  const others = {
-    'ireland': '🇮🇪', 'scotland': '🏴󠁧󠁢󠁳󠁣󠁴󠁿', 'netherlands': '🇳🇱',
-    'nepal': '🇳🇵', 'uae': '🇦🇪', 'emirates': '🇦🇪', 'oman': '🇴🇲',
-    'malaysia': '🇲🇾', 'singapore': '🇸🇬', 'hong kong': '🇭🇰',
-    'kuwait': '🇰🇼', 'qatar': '🇶🇦', 'saudi': '🇸🇦',
-    'usa': '🇺🇸', 'america': '🇺🇸', 'canada': '🇨🇦',
-    'namibia': '🇳🇦', 'uganda': '🇺🇬', 'kenya': '🇰🇪',
-    'nigeria': '🇳🇬', 'tanzania': '🇹🇿', 'ghana': '🇬🇭',
-    'botswana': '🇧🇼', 'lesotho': '🇱🇸', 'rwanda': '🇷🇼',
-    'papua': '🇵🇬', 'vanuatu': '🇻🇺', 'bahrain': '🇧🇭',
-    'bermuda': '🇧🇲', 'suriname': '🇸🇷',
-  }
-
-  for (const [key, flag] of Object.entries(others)) {
-    if (t.includes(key)) return flag
-  }
-
-  return '🏏'
-}
-
-// ── getCountryCode for FlagImg ───────────────────────────────
+// ── getCountryCode ───────────────────────────────────────────
 function getCountryCode(teamName) {
   if (!teamName) return null
   const t = teamName.toLowerCase()
@@ -185,13 +93,8 @@ function getCountryCode(teamName) {
     'england', 'yorkshire', 'lancashire', 'surrey', 'kent', 'essex',
     'hampshire', 'warwickshire', 'nottinghamshire', 'somerset', 'middlesex', 'durham',
   ]
-  const pakistan = [
-    'pakistan', 'karachi', 'lahore', 'peshawar', 'quetta', 'islamabad', 'multan',
-  ]
-  const newZealand = [
-    'new zealand', 'auckland', 'wellington', 'canterbury', 'otago',
-    'central districts', 'northern districts',
-  ]
+  const pakistan = ['pakistan', 'karachi', 'lahore', 'peshawar', 'quetta', 'islamabad', 'multan']
+  const newZealand = ['new zealand', 'auckland', 'wellington', 'canterbury', 'otago', 'central districts', 'northern districts']
   const others = {
     'west indies': 'bb', 'windies': 'bb', 'sri lanka': 'lk',
     'bangladesh': 'bd', 'zimbabwe': 'zw', 'afghanistan': 'af',
@@ -481,14 +384,14 @@ function CricketCard({ match, onClick }) {
 }
 
 // ── Main Cricket Page ────────────────────────────────────────
-function CricketPage() {
-  const [activeTab, setActiveTab] = useState('matches') // 'matches' or 'points'
+function CricketPage({ initialMatch, onClearMatch }) {
+  const [activeTab, setActiveTab] = useState('matches')
   const [filter, setFilter] = useState('all')
   const [matches, setMatches] = useState(cricketMatches)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
   const [isLiveData, setIsLiveData] = useState(false)
-  const [selectedMatch, setSelectedMatch] = useState(null)
+  const [selectedMatch, setSelectedMatch] = useState(initialMatch || null)
 
   async function loadMatches() {
     setLoading(true)
@@ -518,12 +421,27 @@ function CricketPage() {
     return () => clearInterval(interval)
   }, [])
 
+  // If initialMatch changes (from home page click) open it
+  useEffect(() => {
+    if (initialMatch) {
+      setSelectedMatch(initialMatch)
+    }
+  }, [initialMatch])
+
   const filtered = filter === 'all' ? matches : matches.filter(m => m.status === filter)
   const liveCount = matches.filter(m => m.status === 'live').length
 
   // Show Match Detail
   if (selectedMatch) {
-    return <CricketMatchDetail match={selectedMatch} onBack={() => setSelectedMatch(null)} />
+    return (
+      <CricketMatchDetail
+        match={selectedMatch}
+        onBack={() => {
+          setSelectedMatch(null)
+          if (onClearMatch) onClearMatch()
+        }}
+      />
+    )
   }
 
   return (
@@ -583,8 +501,6 @@ function CricketPage() {
 
         {/* Right side — tabs + filters */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-end' }}>
-
-          {/* Main Tabs */}
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={() => setActiveTab('matches')} style={{
               background: activeTab === 'matches' ? 'var(--accent)' : 'transparent',
@@ -603,7 +519,6 @@ function CricketPage() {
             }}>🏆 Points Table</button>
           </div>
 
-          {/* Filter Buttons — only show on matches tab */}
           {activeTab === 'matches' && (
             <div style={{ display: 'flex', gap: 8 }}>
               {['all', 'live', 'upcoming', 'finished'].map(f => (

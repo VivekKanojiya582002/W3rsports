@@ -65,7 +65,7 @@ function getCountryCode(teamName) {
 }
 
 // ── Match Card ───────────────────────────────────────────────
-function MatchCard({ match }) {
+function MatchCard({ match, onClick }) {
   const isLive = match.status === 'live'
   const homeCode = getCountryCode(match.home)
   const awayCode = getCountryCode(match.away)
@@ -83,6 +83,7 @@ function MatchCard({ match }) {
       position: 'relative',
       overflow: 'hidden',
     }}
+      onClick={onClick}
       onMouseEnter={e => {
         e.currentTarget.style.borderColor = 'var(--accent)'
         e.currentTarget.style.transform = 'translateY(-2px)'
@@ -94,7 +95,6 @@ function MatchCard({ match }) {
         e.currentTarget.style.boxShadow = 'none'
       }}
     >
-      {/* Live glow */}
       {isLive && (
         <div style={{
           position: 'absolute', top: 0, left: 0, right: 0, height: 2,
@@ -116,11 +116,8 @@ function MatchCard({ match }) {
             textOverflow: 'ellipsis', whiteSpace: 'nowrap',
           }}>{match.league}</span>
         </div>
-
-        {/* Type badge */}
         <span style={{
-          background: match.type === 'TEST'
-            ? 'rgba(255,193,7,0.15)' : 'rgba(0,230,118,0.15)',
+          background: match.type === 'TEST' ? 'rgba(255,193,7,0.15)' : 'rgba(0,230,118,0.15)',
           color: match.type === 'TEST' ? '#ffc107' : 'var(--accent)',
           fontSize: 9, fontWeight: 700,
           padding: '2px 6px', borderRadius: 8, letterSpacing: 0.5,
@@ -128,10 +125,7 @@ function MatchCard({ match }) {
       </div>
 
       {/* Teams & Score */}
-      <div style={{
-        display: 'flex', alignItems: 'center',
-        justifyContent: 'space-between', gap: 8,
-      }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
         {/* Home Team */}
         <div style={{ textAlign: 'center', flex: 1 }}>
           <div style={{
@@ -150,10 +144,9 @@ function MatchCard({ match }) {
             ) : match.home?.substring(0, 3).toUpperCase()}
           </div>
           <div style={{
-            color: 'var(--text-primary)', fontSize: 11,
-            fontWeight: 600, maxWidth: 70,
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            margin: '0 auto',
+            color: 'var(--text-primary)', fontSize: 11, fontWeight: 600,
+            maxWidth: 70, overflow: 'hidden', textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap', margin: '0 auto',
           }}>{match.home}</div>
           {match.homeScore !== '—' && (
             <div style={{
@@ -207,10 +200,9 @@ function MatchCard({ match }) {
             ) : match.away?.substring(0, 3).toUpperCase()}
           </div>
           <div style={{
-            color: 'var(--text-primary)', fontSize: 11,
-            fontWeight: 600, maxWidth: 70,
-            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            margin: '0 auto',
+            color: 'var(--text-primary)', fontSize: 11, fontWeight: 600,
+            maxWidth: 70, overflow: 'hidden', textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap', margin: '0 auto',
           }}>{match.away}</div>
           {match.awayScore !== '—' && (
             <div style={{
@@ -240,7 +232,7 @@ function MatchCard({ match }) {
 }
 
 // ── Main Carousel ────────────────────────────────────────────
-function LiveMatchCarousel() {
+function LiveMatchCarousel({ onMatchClick }) {
   const [matches, setMatches] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -249,7 +241,6 @@ function LiveMatchCarousel() {
       try {
         const data = await getCurrentMatches()
         if (data?.data && data.data.length > 0) {
-          // Format matches for carousel
           const formatted = data.data
             .filter(m => m.matchStarted || (!m.matchStarted && !m.matchEnded))
             .slice(0, 15)
@@ -266,10 +257,17 @@ function LiveMatchCarousel() {
               if (m.matchStarted && !m.matchEnded) status = 'live'
               else if (m.matchEnded) status = 'finished'
 
+              // Build full match object compatible with CricketMatchDetail
+              const homeCode = getCountryCode(homeTeam)
+              const awayCode = getCountryCode(awayTeam)
+
               return {
                 id: m.id || i,
+                matchId: m.id,
                 league: m.series || m.name || 'Cricket',
+                tournament: m.series || m.name || 'Cricket',
                 type: m.matchType?.toUpperCase() || 'T20',
+                flagCode: homeCode || awayCode || null,
                 home: homeTeam,
                 away: awayTeam,
                 homeScore: m.score?.[0]?.r !== undefined
@@ -280,9 +278,27 @@ function LiveMatchCarousel() {
                 awayImg: awayTeamInfo?.img || null,
                 status,
                 statusText: m.status || 'Match in progress',
+                minute: status === 'live' ? 'LIVE' : status === 'finished' ? 'FT' : 'TBD',
                 time: m.dateTimeGMT
                   ? new Date(m.dateTimeGMT).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                   : 'TBD',
+                // Full home/away objects for CricketMatchDetail
+                homeObj: {
+                  name: homeTeam,
+                  shortName: homeTeam.substring(0, 3).toUpperCase(),
+                  score: m.score?.[0]?.r !== undefined ? `${m.score[0].r}/${m.score[0].w}` : '—',
+                  overs: String(m.score?.[0]?.o || '—'),
+                  color: '#1a3a25',
+                  img: homeTeamInfo?.img || null,
+                },
+                awayObj: {
+                  name: awayTeam,
+                  shortName: awayTeam.substring(0, 3).toUpperCase(),
+                  score: m.score?.[1]?.r !== undefined ? `${m.score[1].r}/${m.score[1].w}` : '—',
+                  overs: String(m.score?.[1]?.o || '—'),
+                  color: '#1a3a25',
+                  img: awayTeamInfo?.img || null,
+                },
               }
             })
           setMatches(formatted)
@@ -296,12 +312,21 @@ function LiveMatchCarousel() {
     loadMatches()
   }, [])
 
+  // Convert carousel match to CricketMatchDetail format
+  function handleMatchClick(match) {
+    if (!onMatchClick) return
+    const detailMatch = {
+      ...match,
+      home: match.homeObj,
+      away: match.awayObj,
+    }
+    onMatchClick(detailMatch)
+  }
+
   const liveCount = matches.filter(m => m.status === 'live').length
 
   return (
     <div style={{ padding: '0 24px 24px' }}>
-
-      {/* Section Header */}
       <div style={{
         display: 'flex', alignItems: 'center',
         justifyContent: 'space-between', marginBottom: 14,
@@ -316,7 +341,6 @@ function LiveMatchCarousel() {
             color: 'var(--text-primary)', fontSize: 13,
             fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase',
           }}>Live & Upcoming Matches</span>
-
           {liveCount > 0 && (
             <span style={{
               background: 'rgba(0,230,118,0.12)',
@@ -326,24 +350,18 @@ function LiveMatchCarousel() {
             }}>{liveCount} LIVE</span>
           )}
         </div>
-        <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>
-          Swipe for more →
-        </span>
+        <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>Swipe for more →</span>
       </div>
 
-      {/* Scrollable Cards */}
       {loading ? (
-        <div style={{
-          display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 8,
-        }}>
+        <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 8 }}>
           {[1, 2, 3, 4, 5].map(i => (
             <div key={i} style={{
               minWidth: 220, height: 160,
               background: 'var(--bg-card)',
               border: '1px solid var(--border)',
-              borderRadius: 12,
-              animation: 'pulse 1.5s infinite',
-              flexShrink: 0,
+              borderRadius: 12, flexShrink: 0,
+              opacity: 0.5,
             }} />
           ))}
         </div>
@@ -354,14 +372,16 @@ function LiveMatchCarousel() {
           scrollbarWidth: 'none',
         }}>
           {matches.map(match => (
-            <MatchCard key={match.id} match={match} />
+            <MatchCard
+              key={match.id}
+              match={match}
+              onClick={() => handleMatchClick(match)}
+            />
           ))}
         </div>
       )}
 
-      <style>{`
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-      `}</style>
+      <style>{`@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}`}</style>
     </div>
   )
 }

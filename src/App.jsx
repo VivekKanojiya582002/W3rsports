@@ -43,6 +43,22 @@ function ComingSoon({ sport }) {
 
 function App() {
   const [activePage, setActivePage] = useState('Live Scores')
+  const [selectedMatch, setSelectedMatch] = useState(null)
+
+  // When user clicks a match card on home page
+  // → go to Cricket page and open that match detail
+  function handleMatchClick(match) {
+    setSelectedMatch(match)
+    setActivePage('Cricket')
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // When user navigates via navbar — clear selected match
+  function handleNavigate(page) {
+    setActivePage(page)
+    setSelectedMatch(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   const renderPage = () => {
     switch (activePage) {
@@ -50,12 +66,17 @@ function App() {
         return (
           <>
             <HeroBanner />
-            <LiveMatchCarousel />
-            <MatchCenter />
+            <LiveMatchCarousel onMatchClick={handleMatchClick} />
+            <MatchCenter onMatchClick={handleMatchClick} />
           </>
         )
       case 'Cricket':
-        return <CricketPage />
+        return (
+          <CricketPage
+            initialMatch={selectedMatch}
+            onClearMatch={() => setSelectedMatch(null)}
+          />
+        )
       case 'Football':
         return <ComingSoon sport="Football" />
       case 'Motorsports':
@@ -69,7 +90,7 @@ function App() {
 
   return (
     <div style={{ background: 'var(--bg-main)', minHeight: '100vh' }}>
-      <Navbar activePage={activePage} onNavigate={setActivePage} />
+      <Navbar activePage={activePage} onNavigate={handleNavigate} />
       {renderPage()}
       <Footer />
     </div>
